@@ -1,16 +1,25 @@
 import server from "./server";
-import * as secp256k1 from "ethereum-cryptography/secp256k1";
+import {secp256k1} from "ethereum-cryptography/secp256k1";
 import {toHex} from "ethereum-cryptography/utils"
 import {keccak256} from "ethereum-cryptography/keccak"
+import { utf8ToBytes } from "ethereum-cryptography/utils";
 
 function Wallet({ address, setAddress, balance, setBalance, privateKey, setPrivateKey }) {
+
+  function getAddress(publicKey) {
+    let hash = keccak256(publicKey.slice(1));
+    return hash.slice(-20);
+  }
+
   async function onChange(evt) {
     const privateKey = evt.target.value;
     setPrivateKey(privateKey);
 
-    const hash = keccak256(toHex(secp256k1.getPublicKey(privateKey)).slice(1));
-    const address = toHex(hash.slice(-20));
+    const publicKey = secp256k1.getPublicKey(privateKey);
+    const address = '0x' + toHex(getAddress(publicKey));
     setAddress(address);
+    console.log(address);
+    console.log(privateKey);
 
     if (address) {
       const {
@@ -31,11 +40,9 @@ function Wallet({ address, setAddress, balance, setBalance, privateKey, setPriva
         <input placeholder="Private Key" value={privateKey} onChange={onChange}></input>
       </label>
 
-      <div>
-        Public Key: <span className="address">{address}</span>
-      </div>
-
+      <div className="address">Public Key: {address}</div>
       <div className="balance">Balance: {balance}</div>
+
     </div>
   );
 }
