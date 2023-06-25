@@ -3,23 +3,51 @@ import {secp256k1} from "ethereum-cryptography/secp256k1";
 import {toHex} from "ethereum-cryptography/utils"
 import {keccak256} from "ethereum-cryptography/keccak"
 import { utf8ToBytes } from "ethereum-cryptography/utils";
+import { useEffect } from "react";
 
-function Wallet({ address, setAddress, balance, setBalance, privateKey, setPrivateKey }) {
+
+function generateKey() {
+  return secp256k1.utils.randomPrivateKey();
+}
+
+
+function Wallet({ address, setAddress, balance, setBalance }) {
+
+  //const [privateKey, setPrivateKey] = useState();
+  //const privateKey = secp256k1.utils.randomPrivateKey();
+  //setPrivateKey(privateKey);
+
+  //const publicKey = secp256k1.getPublicKey(privateKey);
 
   function getAddress(publicKey) {
     let hash = keccak256(publicKey.slice(1));
     return hash.slice(-20);
   }
 
-  async function onChange(evt) {
-    const privateKey = evt.target.value;
-    setPrivateKey(privateKey);
 
-    const publicKey = secp256k1.getPublicKey(privateKey);
-    const address = '0x' + toHex(getAddress(publicKey));
+
+  // console.log("Here is actual Private Key : ", privateKey);
+
+  //console.log("Here is actual Private Key : ", privateKey);
+
+  //console.log("Here is actual Address : ", address);
+  //const privateK = evt.target.value;
+  //privateKey = utf8ToBytes(privateK);
+  //const privateK = secp256k1.utils.randomPrivateKey();
+
+  //console.log(privateKey);
+
+  //const privateKeys = utf8ToBytes(toHex(privateK));
+  //const publicKey = secp256k1.getPublicKey(privateKey);
+
+
+  //const addr = getAddress(publicKey);
+  //console.log("Here is generated Address : ", addr);
+
+  async function onChange(evt) {
+    const address = evt.target.value;
     setAddress(address);
-    console.log(address);
-    console.log(privateKey);
+    
 
     if (address) {
       const {
@@ -36,11 +64,11 @@ function Wallet({ address, setAddress, balance, setBalance, privateKey, setPriva
       <h1>Your Wallet</h1>
 
       <label>
-        Private Key
-        <input placeholder="Private Key" value={privateKey} onChange={onChange}></input>
+        Address
+        <input placeholder="Public Key" value={address} onChange={onChange}></input>
       </label>
 
-      <div className="address">Public Key: {address}</div>
+      {/* <div className="address">Public Key: {address}</div> */}
       <div className="balance">Balance: {balance}</div>
 
     </div>

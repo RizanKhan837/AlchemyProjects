@@ -8,7 +8,7 @@ const publicKey = secp256k1.getPublicKey(privateKey);
 function getAddress(publicKey) {
     let hash = keccak256(publicKey.slice(1));
     return hash.slice(-20);
- }
+}
 
 const address = '0x' + toHex(getAddress(publicKey));
 
